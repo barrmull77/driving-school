@@ -1,7 +1,6 @@
 module.exports = {
     presets: [
         '@babel/preset-typescript',
-        '@babel/preset-flow',
         '@babel/preset-react',
         [
             '@babel/preset-env',
@@ -13,10 +12,11 @@ module.exports = {
             },
         ],
     ],
-    plugins: ['transform-class-properties'],
+    plugins: ['@babel/plugin-proposal-class-properties'],
     env: {
         test: {
-            plugins: ['transform-es2015-modules-commonjs'],
+            plugins: ['@babel/plugin-transform-modules-commonjs'],
         },
     },
-}
+};
+

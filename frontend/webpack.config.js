@@ -6,13 +6,16 @@ module.exports = ({ mode } = { mode: 'production' }) => {
 
     return {
         mode,
+        performance: {
+            hints: false 
+        }, 
         devServer: {
             compress: false,
             historyApiFallback: true,
             port: 3000,
         },
         devtool: mode === 'production' ? 'source-map' : 'eval-source-map',
-        entry: ['@babel/polyfill', './src/index.tsx'],
+        entry: ['core-js/stable', 'regenerator-runtime/runtime', './src/index.tsx'],
         output: {
             publicPath: '/',
             path: path.resolve(__dirname, 'build'),
