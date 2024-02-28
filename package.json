@@ -1,0 +1,21 @@
+{
+  "name": "YAAK frontend-worktask",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "version": "1.0.0",
+  "main": "/",
+  "scripts": {
+    "server": "npm run dev --prefix backend",
+    "client": "npm run dev --prefix frontend",
+    "server-install": "npm install --prefix backend",
+    "client-install": "npm install --prefix frontend",
+    "install-dependency": "concurrently \"npm run server-install\" \"npm run client-install\"",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "dependencies": {
+    "concurrently": "^8.0.1"
+  }
+}

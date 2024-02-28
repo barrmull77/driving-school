@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../../bench-marketplace-front-end"
+		}
+	],
+	"settings": {}
+}
