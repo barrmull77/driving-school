@@ -1,5 +1,4 @@
 import React from 'react'
-import style from './style.less'
 
 export interface ProgressProps {
   percentage?: number
@@ -18,26 +17,37 @@ const Progress: React.FunctionComponent<ProgressProps> = ({
     `
 
   const diameter = Math.PI * 2 * radius
-  const progressStyle = {
-    strokeDasharray: `${diameter}px ${diameter}px`,
-    strokeDashoffset: `${((100 - percentage) / 100) * diameter}px`,
-  }
+  
+  const styles = {
+    progressPath: {
+      stroke: '#4CAF50', // Example green color, replace with the hex code of @color-green-060
+      strokeLinecap: 'round',
+      strokeWidth,
+      fillOpacity: 0,
+      strokeDasharray: `${diameter}px ${diameter}px`,
+      strokeDashoffset: `${((100 - percentage) / 100) * diameter}px`,
+    },
+    progressTrail: {
+      stroke: '#BDBDBD', // Example grey color, replace with the hex code of @color-pewter-grey-095
+      strokeWidth,
+      fillOpacity: 0,
+    },
+  };
 
   return (
     <svg viewBox="0 0 100 100" width={24} height={24}>
       <path
-        className={style.progressTrail}
         d={pathDescription}
         strokeWidth={strokeWidth}
         fillOpacity={0}
+        style={styles.progressTrail}
       />
 
       <path
-        className={style.progressPath}
         d={pathDescription}
         strokeWidth={strokeWidth}
         fillOpacity={0}
-        style={progressStyle}
+        style={styles.progressPath}
       />
     </svg>
   )

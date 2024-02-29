@@ -26,6 +26,7 @@ const drawerWidth = {
 
 const openedMixin = (theme: Theme): CSSObject => ({
     width: drawerWidth.open,
+    backgroundColor: theme.palette.secondary.light,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -38,6 +39,7 @@ const closedMixin = (theme: Theme): CSSObject => ({
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
     }),
+    backgroundColor: theme.palette.secondary.light,
     overflowX: 'hidden',
     width: drawerWidth.closed,
 });
@@ -45,7 +47,7 @@ const closedMixin = (theme: Theme): CSSObject => ({
 const StyledDrawer = styled(Drawer, { shouldForwardProp: (prop) => prop !== 'open' })(
     ({ theme, open }) => ({
       width: drawerWidth.open,
-      backgroundColor: theme.palette.secondary.light,
+      
       flexShrink: 0,
       whiteSpace: 'nowrap',
       boxSizing: 'border-box',
@@ -91,7 +93,7 @@ const Sidebar: React.FC = () => {
 
     const menuItems: MenuItem[] = [
         { 
-            text: 'Home', 
+            text: 'Drives', 
             icon: {
                 selected: DriveGreenIcon,
                 unselected: DriveBlackIcon

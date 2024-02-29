@@ -18,6 +18,11 @@ const theme: ThemeOptions = {
             fontSize: '1rem',
             lineHeight: '1.4rem'
         },
+        body2: {
+            fontWeight: '500',
+            fontSize: '0.75rem',
+            lineHeight: '1rem'
+        }
     },
     breakpoints: {
         values: {
@@ -40,6 +45,10 @@ const theme: ThemeOptions = {
         text: {
             primary: '#0c0d0d',
             secondary: '#7d8287'
+        },
+        yellowChip: {
+            main: '#e5b300',
+            light: '#fffae5'
         }
     },
 };
