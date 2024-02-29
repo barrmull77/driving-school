@@ -2,7 +2,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Theme, ThemeOptions } from '@mui/material/styles';
 
 // Create a theme instance.
-const theme = {
+const theme: ThemeOptions = {
     typography: {
         fontFamily: [
             'Inter', // Make sure the name matches the Google Fonts name
