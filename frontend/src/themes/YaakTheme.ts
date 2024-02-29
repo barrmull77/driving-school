@@ -21,7 +21,7 @@ const theme = {
             lg: 1280,
             xl: 1768,
         },
-    },
+    }
 };
 
 export default createTheme(theme);
