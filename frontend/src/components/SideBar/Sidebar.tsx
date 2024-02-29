@@ -45,6 +45,7 @@ const closedMixin = (theme: Theme): CSSObject => ({
 const StyledDrawer = styled(Drawer, { shouldForwardProp: (prop) => prop !== 'open' })(
     ({ theme, open }) => ({
       width: drawerWidth.open,
+      backgroundColor: theme.palette.secondary.light,
       flexShrink: 0,
       whiteSpace: 'nowrap',
       boxSizing: 'border-box',

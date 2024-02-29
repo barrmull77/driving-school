@@ -30,11 +30,12 @@ const theme: ThemeOptions = {
     },
     palette: {
         primary: {
-            light: '#eaffe9',
-            main: '#00a751'
+            main: '#00a751',
+            light: '#eaffe9'
         },
         secondary: {
-          main: '#e3e8e5',
+            main: '#e3e8e5',
+            light: '#f8f9ff'
         },
         text: {
             primary: '#0c0d0d',
