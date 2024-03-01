@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box'
+import CircularProgress from '@mui/material/CircularProgress';
 import SvgIcon from '@mui/material/SvgIcon';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -83,7 +84,9 @@ export const stickyStyles = {
 }
 
 const DriveList: React.FC = () => {
-    const { drives, loading, error, fetchDrives, filteredDrives } = useDriveStore();
+    
+    const { drives, loading, error, fetchDrives } = useDriveStore();
+    const filteredDrives = useDriveStore(state => state.filteredDrives());
 
     const DriveListHeaders: DriveListHeader[] = [
         {
@@ -129,9 +132,26 @@ const DriveList: React.FC = () => {
     useEffect(() => {
         fetchDrives();
     }, [fetchDrives]);
-
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error}</div>;
+  
+    if (loading) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                <CircularProgress sx={{margin: '20px 16px'}}/>
+                <Typography variant='h3'>
+                    Loading...
+                </Typography>
+            </Box>
+        );
+    }
+    if (error) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                <Typography variant='h3' color='error'>
+                    Error: {error}
+                </Typography>
+            </Box>
+        )
+    } 
 
     return (
         <TableContainer component={Paper} sx={{  maxWidth: '100%', overflowX: 'auto' }}>
@@ -153,7 +173,7 @@ const DriveList: React.FC = () => {
             </TableHead>
           
             <TableBody>
-            {filteredDrives().map((drive) => (
+            {filteredDrives.map((drive) => (
                 <DriveListItem key={drive.id} data={drive} />
             ))}
             </TableBody>
