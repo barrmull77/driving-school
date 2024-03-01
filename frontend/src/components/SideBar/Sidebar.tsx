@@ -8,6 +8,7 @@ import { ReactComponent as DriveBlackIcon } from '@/assets/icons/drive-black-ico
 import { ReactComponent as SettingsBlackIcon } from '@/assets/icons/settings-black-icon.svg'
 import { ReactComponent as DriveGreenIcon } from '@/assets/icons/drive-green-icon.svg'
 import { ReactComponent as SettingsGreenIcon } from '@/assets/icons/settings-green-icon.svg'
+import { useSidebarStore } from '@/store/store';
 import theme from '@/themes/YaakTheme';
 
 interface MenuItem {
@@ -19,7 +20,7 @@ interface MenuItem {
     path: string;
 }
 
-const drawerWidth = {
+export const drawerWidth = {
     open: 272,
     closed: 72
 }
@@ -85,11 +86,9 @@ const LogoContainer = styled(Box)(({ theme }) => ({
 
 
 const Sidebar: React.FC = () => {
-    const [drawerOpen, setDrawerOpen] = useState<boolean>(true);
-
-    const handleDrawerToggle = () => {
-        setDrawerOpen(!drawerOpen);
-    };
+    const toggleSidebar = useSidebarStore((state) => state.toggleSidebar);
+    const isSidebarOpen = useSidebarStore((state) => state.isSidebarOpen);
+    const setSidebarOpen = useSidebarStore((state) => state.setSidebarOpen);
 
     const menuItems: MenuItem[] = [
         { 
@@ -113,7 +112,7 @@ const Sidebar: React.FC = () => {
     useEffect(() => { 
         const updateDrawerState = () => {
           const isMobile = window.innerWidth < theme.breakpoints.values.lg; 
-          setDrawerOpen(!isMobile);
+          setSidebarOpen(!isMobile);
         };
     
         updateDrawerState();
@@ -127,7 +126,7 @@ const Sidebar: React.FC = () => {
     return (
         <StyledDrawer
             variant="permanent"
-            open={drawerOpen}
+            open={isSidebarOpen}
             anchor="left"
         >
             <SideBarHeader sx={{
@@ -141,16 +140,16 @@ const Sidebar: React.FC = () => {
             }}>
                 <LogoContainer
                     sx={{
-                        opacity: drawerOpen ? 1 : 0, // Adjust opacity based on the drawerOpen state
-                        position: drawerOpen ? 'relative' : 'absolute',
-                        padding: drawerOpen ? theme.spacing(2) : theme.spacing(1), // Adjust padding based on the open state
+                        opacity: isSidebarOpen ? 1 : 0, // Adjust opacity based on the isSidebarOpen state
+                        position: isSidebarOpen ? 'relative' : 'absolute',
+                        padding: isSidebarOpen ? theme.spacing(2) : theme.spacing(1), // Adjust padding based on the open state
                     }}
                 >
                     <SvgIcon component={YaakLogo} sx={{ width: 76, height: 26 }} viewBox="0 0 122 48"/>
                 </LogoContainer>
 
                 <IconButton 
-                    onClick={handleDrawerToggle}
+                    onClick={toggleSidebar}
                     sx={{
                         height: '40px',
                         width: '40px',
@@ -158,7 +157,7 @@ const Sidebar: React.FC = () => {
                     }}
                     >
                         <SvgIcon
-                            component={drawerOpen ? DrawerOpenIcon : DrawerClosedIcon}
+                            component={isSidebarOpen ? DrawerOpenIcon : DrawerClosedIcon}
                             sx={{ width: 16, height: 10 }}
                             viewBox="0 0 16 10"
                         />
@@ -176,7 +175,7 @@ const Sidebar: React.FC = () => {
                                 to={item.path}
                                 sx={{
                                     height: '48px',
-                                    width: drawerOpen ? '224px' : 'auto',
+                                    width: isSidebarOpen ? '224px' : 'auto',
                                     backgroundColor: location.pathname === item.path ? theme.palette.primary.light : 'transparent',
                                     '&:hover': {
                                         backgroundColor: 'rgba(0, 0, 0, 0.08)',
@@ -194,9 +193,9 @@ const Sidebar: React.FC = () => {
                                     component="span" 
                                     color={location.pathname === item.path ? "primary.main" : "text.primary"}
                                     sx={{
-                                        opacity: drawerOpen ? 1 : 0, // Adjust opacity based on the open state
-                                        position: drawerOpen ? 'relative' : 'absolute',
-                                        padding: drawerOpen ? theme.spacing(2) : theme.spacing(1), // Adjust padding based on the open state
+                                        opacity: isSidebarOpen ? 1 : 0, // Adjust opacity based on the open state
+                                        position: isSidebarOpen ? 'relative' : 'absolute',
+                                        padding: isSidebarOpen ? theme.spacing(2) : theme.spacing(1), // Adjust padding based on the open state
                                     }}
                                     >
                                     {item.text}

@@ -18,8 +18,13 @@ const theme: ThemeOptions = {
             fontSize: '1rem',
             lineHeight: '1.4rem'
         },
+        body1: {
+            fontWeight: '400',
+            fontSize: '0.9rem',
+            lineHeight: '1.2rem'
+        },
         body2: {
-            fontWeight: '500',
+            fontWeight: '400',
             fontSize: '0.75rem',
             lineHeight: '1rem'
         }

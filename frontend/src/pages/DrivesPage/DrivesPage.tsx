@@ -1,15 +1,19 @@
 import React from 'react';
-import { Box, Divider, Typography } from '@mui/material';
+import { Box, Container, Divider, Grid, Paper, Typography } from '@mui/material';
 import SearchBar from '@/components/SearchBar';
 import DateFilter from '@/components/DateFilter';
 import DriveList from '@/components/DriveList';
 import theme from '@/themes/YaakTheme';
+import { useSidebarStore } from '@/store/store';
+import { drawerWidth } from '@/components/SideBar/Sidebar';
 
 
 const Homepage: React.FC = () => {
+    const isSidebarOpen = useSidebarStore((state) => state.isSidebarOpen);
+
     return (
-        <Box sx={{ height: '100vh', width: '100%', padding: '24px' }}>
-            <Box sx={{ width: '100%', padding: '24px', backgroundColor: theme.palette.common.white }}>
+        <Container maxWidth={false} sx={{ height: '100vh', width: isSidebarOpen ? `calc(100% - ${drawerWidth.open}px)` : `calc(100% - ${drawerWidth.closed}px)`, padding: '24px' }}>
+            <Box sx={{ maxWidth: '100vw', width: '100%', padding: '24px', backgroundColor: theme.palette.common.white }}>
                 <Typography variant="h2" component="h2" sx={{ mb: 2 }}>
                     Drives
                 </Typography>
@@ -18,11 +22,15 @@ const Homepage: React.FC = () => {
                     <SearchBar />
                     <DateFilter />
                 </Box>
-                <Box>
-                    <DriveList />
-                </Box>
+                <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                        <Paper>
+                            <DriveList />    
+                        </Paper>
+                    </Grid>
+                </Grid>
             </Box>
-        </Box>
+        </Container>
     );
 }
 

@@ -33,4 +33,9 @@ export const useDriveStore = create<DriveState>((set) => ({
         set({ error: error, loading: false });
     }
   },
+
+export const useSidebarStore = create<SideBarState>((set) => ({
+  isSidebarOpen: true, 
+  toggleSidebar: () => set((state) => ({ isSidebarOpen: !state.isSidebarOpen })),
+  setSidebarOpen: (isOpen) => set({ isSidebarOpen: isOpen }),
 }));
