@@ -12,7 +12,7 @@ import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import { useDriveStore } from '@/store/store';
-import { ReactComponent as DownArrowIcon } from '@/assets/icons/down-arrow-icon.svg'
+import { ReactComponent as DownArrowIcon } from '@/assets/icons/down-arrow-icon.svg';
 import DriveListItem from '../DriveListItem';
 import theme from '@/themes/YaakTheme';
 
@@ -83,51 +83,50 @@ export const stickyStyles = {
     }
 }
 
+const DriveListHeaders: DriveListHeader[] = [
+    {
+        name: 'Time',
+        icon: DownArrowIcon
+    },
+    {
+        name: 'Partner'
+    },
+    {
+        name: 'Type'
+    },
+    {
+        name: 'Vehicle'
+    },
+    {
+        name: 'Kit ID'
+    },
+    {
+        name: 'Driver'
+    },
+    {
+        name: 'Instructor'
+    },
+    {
+        name: 'Status',
+        stickyStyles: stickyStyles.stickyStylesStatus
+    },
+    {
+        name: 'Data',
+        stickyStyles: stickyStyles.stickyStylesData
+    },
+    {
+        name: 'Bitrate',
+        stickyStyles: stickyStyles.stickyStylesBitrate
+    },
+    {
+        name: '',
+        stickyStyles: stickyStyles.stickyStylesClipboard
+    }
+]
 const DriveList: React.FC = () => {
     
     const { drives, loading, error, fetchDrives } = useDriveStore();
     const filteredDrives = useDriveStore(state => state.filteredDrives());
-
-    const DriveListHeaders: DriveListHeader[] = [
-        {
-            name: 'Time',
-            icon: DownArrowIcon
-        },
-        {
-            name: 'Partner'
-        },
-        {
-            name: 'Type'
-        },
-        {
-            name: 'Vehicle'
-        },
-        {
-            name: 'Kit ID'
-        },
-        {
-            name: 'Driver'
-        },
-        {
-            name: 'Instructor'
-        },
-        {
-            name: 'Status',
-            stickyStyles: stickyStyles.stickyStylesStatus
-        },
-        {
-            name: 'Data',
-            stickyStyles: stickyStyles.stickyStylesData
-        },
-        {
-            name: 'Bitrate',
-            stickyStyles: stickyStyles.stickyStylesBitrate
-        },
-        {
-            name: '',
-            stickyStyles: stickyStyles.stickyStylesClipboard
-        }
-    ]
 
     useEffect(() => {
         fetchDrives();

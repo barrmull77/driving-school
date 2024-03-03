@@ -15,6 +15,7 @@ import { ReactComponent as CopyIcon } from '@/assets/icons/copy-icon.svg';
 import { createSticky, stickyStyles } from '../DriveList/DriveList';
 import Progress from '../Progress';
 import theme from '@/themes/YaakTheme';
+import { DriveData } from '@/store/store'
 
 const StyledTypography = styled(Typography)`
     white-space: nowrap;
@@ -37,8 +38,8 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 
   
-// Todo - add interface for props
-const DriveListItem: React.FC<any> = ({ data = {}}) => {
+// Use React memo to prevent unnecessary rerenders
+const DriveListItem: React.FC<DriveData> = React.memo(({ data = {}}) => {
 
     const formatDateString = (dateString: string) => {
         const date = new Date(dateString);
@@ -114,11 +115,8 @@ const DriveListItem: React.FC<any> = ({ data = {}}) => {
     const handleCopy = async () => {
         try {
           await navigator.clipboard.writeText(data.id);
-          console.log('Text copied to clipboard');
-          // Display some kind of success message or visual feedback
         } catch (err) {
           console.error('Failed to copy text to clipboard', err);
-          // Display an error message to the user
         }
     };
     
@@ -186,6 +184,6 @@ const DriveListItem: React.FC<any> = ({ data = {}}) => {
             </StyledTableCell>
         </TableRow>
     )
-}
+})
 
 export default DriveListItem

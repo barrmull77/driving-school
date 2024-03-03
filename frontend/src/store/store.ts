@@ -2,7 +2,7 @@
 import { create } from 'zustand';
 import { fetchDrivesListApi } from '@/services/api';
 
-interface DriveData {
+export interface DriveData {
   id: string;
   incidentCount: number;
   bookmarkCount: number;

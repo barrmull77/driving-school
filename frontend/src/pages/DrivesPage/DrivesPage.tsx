@@ -12,7 +12,7 @@ const Homepage: React.FC = () => {
     const isSidebarOpen = useSidebarStore((state) => state.isSidebarOpen);
 
     return (
-        <Container maxWidth={false} sx={{ height: '100vh', width: isSidebarOpen ? `calc(100% - ${drawerWidth.open}px)` : `calc(100% - ${drawerWidth.closed}px)`, padding: '24px' }}>
+        <Container maxWidth={false} sx={{ width: isSidebarOpen ? `calc(100% - ${drawerWidth.open}px)` : `calc(100% - ${drawerWidth.closed}px)`, p: { xs: 3, xl: 5 }, }}>
             <Box sx={{ maxWidth: '100vw', width: '100%', padding: '24px', backgroundColor: theme.palette.common.white }}>
                 <Typography variant="h2" component="h2" sx={{ mb: 2 }}>
                     Drives
