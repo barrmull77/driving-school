@@ -1,6 +1,17 @@
-// store.ts
 import { create } from 'zustand';
 import { fetchDrivesListApi } from '@/services/api';
+
+interface Person {
+  id: string;
+  firstname: string;
+  lastname: string;
+  profileImageURL: string;
+}
+
+interface Partner {
+  id: string;
+  name: string;
+}
 
 export interface DriveData {
   id: string;
@@ -25,18 +36,6 @@ export interface DriveData {
   bitRateKbps: number;
 }
 
-interface Person {
-  id: string;
-  firstname: string;
-  lastname: string;
-  profileImageURL: string;
-}
-
-interface Partner {
-  id: string;
-  name: string;
-}
-
 interface DriveState {
   drives: DriveData[];
   loading: boolean;
@@ -44,12 +43,13 @@ interface DriveState {
   page: number;
   pageSize: number;
   hasMore: boolean;
-  fetchDrives: () => void;
+  fetchDrives: () => Promise<void>;
+  fetchMoreDrives: () => Promise<void>;
+  setSearchTerm: (term: string) => void;
+  setFilterDate: (date: string | null) => void;
   searchTerm: string;
   filterDate: string | null;
-  setSearchTerm: (term: string) => void; 
-  setFilterDate: (date: string | null) => void;
-  filteredDrives: () => DriveData[]; 
+  filteredDrives: DriveData[];
 }
 
 interface SideBarState {
@@ -64,20 +64,24 @@ export const useDriveStore = create<DriveState>((set, get) => ({
   error: null,
   searchTerm: '',
   filterDate: null,
-  filteredDrivesMemoized: null,
+  filteredDrives: [],
   page: 1,
   pageSize: 20,
   hasMore: true,
+
   fetchDrives: async () => {
     set({ loading: true });
     try {
       const { drives, hasMore } = await fetchDrivesListApi(1, get().pageSize);
-      set({ 
+      set(state => ({ 
+        ...state,
         drives, 
         loading: false, 
         page: 1, 
-        hasMore 
-      });
+        hasMore,
+        // Re-compute filteredDrives since the base drives array has changed
+        filteredDrives: filterDrives(drives, state.searchTerm, state.filterDate),
+      }));
     } catch (error) {
       console.error('Error in fetchDrives:', error);
       set({ error: error.toString(), loading: false });
@@ -93,51 +97,64 @@ export const useDriveStore = create<DriveState>((set, get) => ({
       const currentDrives = get().drives;
       const updatedDrives = [
         ...currentDrives,
-        ...moreDrives.filter((newDrive) => !currentDrives.some((existingDrive) => existingDrive.id === newDrive.id))
+        ...moreDrives.filter((newDrive) => !currentDrives.some((existingDrive) => existingDrive.id === newDrive.id)),
       ];
-      set({
+      set(state => ({
+        ...state,
         drives: updatedDrives,
         loading: false,
         page: nextPage,
         hasMore,
-      });
+        // Re-compute filteredDrives since the base drives array has changed
+        filteredDrives: filterDrives(updatedDrives, state.searchTerm, state.filterDate),
+      }));
     } catch (error) {
       console.error('Error in fetchMoreDrives:', error);
       set({ error: error.toString(), loading: false });
     }
   },
+
   setSearchTerm: (term: string) => {
-    set({ searchTerm: term });
+    set(state => ({
+      ...state,
+      searchTerm: term,
+      // Re-compute filteredDrives since searchTerm has changed
+      filteredDrives: filterDrives(state.drives, term, state.filterDate),
+    }));
   },
+
   setFilterDate: (date: string | null) => {
-    set({ filterDate: date });
-  },
-  filteredDrives: () => {
-    const { drives, searchTerm, filterDate } = get();
-    return drives.filter((drive) => {
-      const matchesFilterDate = !filterDate || new Date(drive.startTimestamp).toDateString() === new Date(filterDate).toDateString();
-      if (!matchesFilterDate) return 
-      if (!searchTerm.trim()) return matchesFilterDate;
-      const lowerCaseSearchTerm = searchTerm.toLowerCase();
-    
-      const includesSearchTerm = (value: any) => {
-        if (value === null || value === undefined) return false;
-        return String(value).toLowerCase().includes(lowerCaseSearchTerm);
-      };
-      console.log('drives', drives);
-      // Check multiple fields for match
-      const matchesSearchTerm = includesSearchTerm(drive.dongleId) ||
-                                includesSearchTerm(drive.driver?.firstname) ||
-                                includesSearchTerm(drive.driver?.lastname) ||
-                                includesSearchTerm(drive.partner?.name) ||
-                                // Add other fields you want to search in
-                                includesSearchTerm(drive.licensePlate);
-  
-      return matchesFilterDate && matchesSearchTerm;
-      // return matchesFilterDate
-    });
+    set(state => ({
+      ...state,
+      filterDate: date,
+      // Re-compute filteredDrives since filterDate has changed
+      filteredDrives: filterDrives(state.drives, state.searchTerm, date),
+    }));
   },
 }));
+
+// Utility function for filtering drives
+function filterDrives(drives: DriveData[], searchTerm: string, filterDate: string | null): DriveData[] {
+  return drives.filter(drive => {
+    const matchesFilterDate = !filterDate || new Date(drive.startTimestamp).toDateString() === new Date(filterDate).toDateString();
+    if (!searchTerm.trim()) return matchesFilterDate;
+    const lowerCaseSearchTerm = searchTerm.toLowerCase();
+
+    const includesSearchTerm = (value: any) => {
+      if (value === null || value === undefined) return false;
+      return String(value).toLowerCase().includes(lowerCaseSearchTerm);
+    };
+
+    // Check multiple fields for match
+    return matchesFilterDate && (
+      includesSearchTerm(drive.dongleId) ||
+      includesSearchTerm(drive.driver?.firstname) ||
+      includesSearchTerm(drive.driver?.lastname) ||
+      includesSearchTerm(drive.partner?.name) ||
+      includesSearchTerm(drive.licensePlate)
+    );
+  });
+}
 
 export const useSidebarStore = create<SideBarState>((set) => ({
   isSidebarOpen: true, 

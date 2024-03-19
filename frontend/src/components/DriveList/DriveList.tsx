@@ -135,10 +135,8 @@ const loadMoreTriggerStyle = {
 const DriveList: React.FC = () => {
     
     const { loading, error, fetchDrives, fetchMoreDrives } = useDriveStore();
-    const storeFilteredDrives = useDriveStore(state => state.filteredDrives());
-    const filteredDrives = useMemo(() => {
-        return storeFilteredDrives;
-    }, [storeFilteredDrives]);
+    const filteredDrives = useDriveStore(state => state.filteredDrives);
+
     const [renderfilteredDrives, setRenderFilteredDrives] = useState([]);
     const [noResults, setNoResults] = useState(false);
 
