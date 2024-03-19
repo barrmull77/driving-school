@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress';
@@ -13,8 +13,9 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import { useDriveStore } from '@/store/store';
 import { ReactComponent as DownArrowIcon } from '@/assets/icons/down-arrow-icon.svg';
+import useIntersectionObserver from '@/utilites/useIntersectionObserver';
 import DriveListItem from '../DriveListItem';
-import theme from '@/themes/YaakTheme';
+import theme from '@/themes/DriveTheme';
 
 interface stickyStyles {
     stickyWidth: string
@@ -123,16 +124,43 @@ const DriveListHeaders: DriveListHeader[] = [
         stickyStyles: stickyStyles.stickyStylesClipboard
     }
 ]
+
+const loadMoreTriggerStyle = {
+    margin: '0 auto',
+    height: '60px',
+    width: '200px',
+    zIndex: '1000'
+}
+
 const DriveList: React.FC = () => {
     
-    const { drives, loading, error, fetchDrives } = useDriveStore();
-    const filteredDrives = useDriveStore(state => state.filteredDrives());
+    const { loading, error, fetchDrives, fetchMoreDrives } = useDriveStore();
+    const storeFilteredDrives = useDriveStore(state => state.filteredDrives());
+    const filteredDrives = useMemo(() => {
+        return storeFilteredDrives;
+    }, [storeFilteredDrives]);
+    const [renderfilteredDrives, setRenderFilteredDrives] = useState([]);
+    const [noResults, setNoResults] = useState(false);
 
     useEffect(() => {
         fetchDrives();
-    }, [fetchDrives]);
+    }, [])
+
+    useEffect(() => {
+        console.log('filter drives', filteredDrives);
+        const results = filteredDrives;
+        setRenderFilteredDrives(filteredDrives);
+        setNoResults(filteredDrives.length === 0);
+      }, [filteredDrives]);
+
+    useIntersectionObserver({
+        target: '.loadMoreTrigger',
+        onIntersect: () => fetchMoreDrives(),
+        enabled: !loading && !error,
+        threshold: 0.9,
+    });
   
-    if (loading) {
+    if (renderfilteredDrives.length === 0 && loading) {
         return (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                 <CircularProgress sx={{margin: '20px 16px'}}/>
@@ -142,6 +170,7 @@ const DriveList: React.FC = () => {
             </Box>
         );
     }
+
     if (error) {
         return (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
@@ -152,32 +181,49 @@ const DriveList: React.FC = () => {
         )
     } 
 
+    if (noResults) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                <Typography variant='h3' color='error'>
+                    Your search query did not return any results, please try again.
+                </Typography>
+            </Box>
+        )
+    } 
+
     return (
-        <TableContainer component={Paper} sx={{  maxWidth: '100%', overflowX: 'auto' }}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-            <TableHead sx={{ backgroundColor: theme.palette.secondary.main, border: 0 }}>
-                <TableRow sx={{ boxSizing: 'border-box'}}>
-                    {DriveListHeaders.map((item, index) => (
-                        <StyledTableCell key={`header-id-${index}`} align="left" sx={item.stickyStyles ? createSticky(item.stickyStyles) : null}>
-                            <StyledBox >
-                                <Typography variant='body2' color="text.secondary">
-                                    {item.name}
-                                </Typography>
-                                {item.icon && <SvgIcon component={item.icon} sx={{ width: 10, height: 10, marginLeft: '0.2rem' }} viewBox="0 0 10 10"/>}
-                            </StyledBox>
-                        </StyledTableCell>
+        <>
+            <TableContainer component={Paper} sx={{  maxWidth: '100%', overflowX: 'auto' }}>
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead sx={{ backgroundColor: theme.palette.secondary.main, border: 0 }}>
+                    <TableRow sx={{ boxSizing: 'border-box'}}>
+                        {DriveListHeaders.map((item, index) => (
+                            <StyledTableCell key={`header-id-${index}`} align="left" sx={item.stickyStyles ? createSticky(item.stickyStyles) : null}>
+                                <StyledBox >
+                                    <Typography variant='body2' color="text.secondary">
+                                        {item.name}
+                                    </Typography>
+                                    {item.icon && <SvgIcon component={item.icon} sx={{ width: 10, height: 10, marginLeft: '0.2rem' }} viewBox="0 0 10 10"/>}
+                                </StyledBox>
+                            </StyledTableCell>
+                        ))}
+                        
+                    </TableRow>
+                </TableHead>
+            
+                <TableBody>
+                    {renderfilteredDrives.map((drive) => (
+                        <DriveListItem key={drive.id} data={drive} />
                     ))}
-                    
-                </TableRow>
-            </TableHead>
-          
-            <TableBody>
-            {filteredDrives.map((drive) => (
-                <DriveListItem key={drive.id} data={drive} />
-            ))}
-            </TableBody>
-            </Table>
-        </TableContainer>
+                </TableBody>
+                </Table>
+            </TableContainer>
+            <div className="loadMoreTrigger" style={loadMoreTriggerStyle}>
+                <Box sx={{ display: 'flex', justifyContent: 'center', height: '50px', width: '100%', marginTop: '20px'}}>
+                    <CircularProgress />
+                </Box>
+            </div>
+        </>
     )
 }
 

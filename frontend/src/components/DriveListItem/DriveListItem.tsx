@@ -14,7 +14,7 @@ import { ReactComponent as WarningIcon } from '@/assets/icons/warning-icon.svg';
 import { ReactComponent as CopyIcon } from '@/assets/icons/copy-icon.svg';
 import { createSticky, stickyStyles } from '../DriveList/DriveList';
 import Progress from '../Progress';
-import theme from '@/themes/YaakTheme';
+import theme from '@/themes/DriveTheme';
 import { DriveData } from '@/store/store'
 
 const StyledTypography = styled(Typography)`

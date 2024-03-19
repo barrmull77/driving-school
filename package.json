@@ -1,5 +1,5 @@
 {
-  "name": "YAAK frontend-worktask",
+  "name": "Driving School",
   "private": true,
   "workspaces": [
     "backend",

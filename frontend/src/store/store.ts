@@ -41,6 +41,9 @@ interface DriveState {
   drives: DriveData[];
   loading: boolean;
   error: string | null;
+  page: number;
+  pageSize: number;
+  hasMore: boolean;
   fetchDrives: () => void;
   searchTerm: string;
   filterDate: string | null;
@@ -61,13 +64,46 @@ export const useDriveStore = create<DriveState>((set, get) => ({
   error: null,
   searchTerm: '',
   filterDate: null,
+  filteredDrivesMemoized: null,
+  page: 1,
+  pageSize: 20,
+  hasMore: true,
   fetchDrives: async () => {
     set({ loading: true });
     try {
-        const drivesList = await fetchDrivesListApi();
-        set({ drives: drivesList, loading: false });
+      const { drives, hasMore } = await fetchDrivesListApi(1, get().pageSize);
+      set({ 
+        drives, 
+        loading: false, 
+        page: 1, 
+        hasMore 
+      });
     } catch (error) {
-        set({ error: error, loading: false });
+      console.error('Error in fetchDrives:', error);
+      set({ error: error.toString(), loading: false });
+    }
+  },
+
+  fetchMoreDrives: async () => {
+    if (!get().hasMore) return;
+    const nextPage = get().page + 1;
+    set({ loading: true });
+    try {
+      const { drives: moreDrives, hasMore } = await fetchDrivesListApi(nextPage, get().pageSize);
+      const currentDrives = get().drives;
+      const updatedDrives = [
+        ...currentDrives,
+        ...moreDrives.filter((newDrive) => !currentDrives.some((existingDrive) => existingDrive.id === newDrive.id))
+      ];
+      set({
+        drives: updatedDrives,
+        loading: false,
+        page: nextPage,
+        hasMore,
+      });
+    } catch (error) {
+      console.error('Error in fetchMoreDrives:', error);
+      set({ error: error.toString(), loading: false });
     }
   },
   setSearchTerm: (term: string) => {
@@ -79,12 +115,26 @@ export const useDriveStore = create<DriveState>((set, get) => ({
   filteredDrives: () => {
     const { drives, searchTerm, filterDate } = get();
     return drives.filter((drive) => {
-      // Todo - add logic for search functionality
-      // const matchesSearchTerm = !searchTerm.trim() || Object.values(drive).some(value => 
-      //   String(value).toLowerCase().includes(searchTerm.toLowerCase())
-      // );
       const matchesFilterDate = !filterDate || new Date(drive.startTimestamp).toDateString() === new Date(filterDate).toDateString();
-      return matchesFilterDate;
+      if (!matchesFilterDate) return 
+      if (!searchTerm.trim()) return matchesFilterDate;
+      const lowerCaseSearchTerm = searchTerm.toLowerCase();
+    
+      const includesSearchTerm = (value: any) => {
+        if (value === null || value === undefined) return false;
+        return String(value).toLowerCase().includes(lowerCaseSearchTerm);
+      };
+      console.log('drives', drives);
+      // Check multiple fields for match
+      const matchesSearchTerm = includesSearchTerm(drive.dongleId) ||
+                                includesSearchTerm(drive.driver?.firstname) ||
+                                includesSearchTerm(drive.driver?.lastname) ||
+                                includesSearchTerm(drive.partner?.name) ||
+                                // Add other fields you want to search in
+                                includesSearchTerm(drive.licensePlate);
+  
+      return matchesFilterDate && matchesSearchTerm;
+      // return matchesFilterDate
     });
   },
 }));

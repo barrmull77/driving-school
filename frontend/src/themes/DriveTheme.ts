@@ -1,6 +1,5 @@
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Theme, ThemeOptions } from '@mui/material/styles';
-import style from './style.less'
+import { createTheme } from '@mui/material/styles';
+import { ThemeOptions } from '@mui/material/styles';
 
 // Create a theme instance.
 const theme: ThemeOptions = {
@@ -9,6 +8,10 @@ const theme: ThemeOptions = {
             'Inter', // Make sure the name matches the Google Fonts name
             'sans-serif', // You can specify additional fallback fonts
         ].join(','),
+        h1: {
+            fontWeight: '700',
+            fontSize: '2rem'
+        },
         h2: {
             fontWeight: '700',
             fontSize: '1.75rem',

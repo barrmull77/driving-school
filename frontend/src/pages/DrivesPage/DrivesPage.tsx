@@ -3,7 +3,7 @@ import { Box, Container, Divider, Grid, Paper, Typography } from '@mui/material'
 import SearchBar from '@/components/SearchBar';
 import DateFilter from '@/components/DateFilter';
 import DriveList from '@/components/DriveList';
-import theme from '@/themes/YaakTheme';
+import theme from '@/themes/DriveTheme';
 import { useSidebarStore } from '@/store/store';
 import { drawerWidth } from '@/components/SideBar/Sidebar';
 

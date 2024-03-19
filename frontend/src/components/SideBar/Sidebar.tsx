@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { styled, Theme, CSSObject } from '@mui/material/styles';
 import { Box, Drawer, IconButton, Link, List, ListItem, ListItemButton, ListItemText, SvgIcon, Typography } from '@mui/material';
-import { ReactComponent as YaakLogo } from '@/assets/icons/yaak-logo.svg'
 import { ReactComponent as DrawerOpenIcon } from '@/assets/icons/drawer-icon.svg'
 import { ReactComponent as DrawerClosedIcon } from '@/assets/icons/drawer-closed-icon.svg'
 import { ReactComponent as DriveBlackIcon } from '@/assets/icons/drive-black-icon.svg'
@@ -9,7 +8,7 @@ import { ReactComponent as SettingsBlackIcon } from '@/assets/icons/settings-bla
 import { ReactComponent as DriveGreenIcon } from '@/assets/icons/drive-green-icon.svg'
 import { ReactComponent as SettingsGreenIcon } from '@/assets/icons/settings-green-icon.svg'
 import { useSidebarStore } from '@/store/store';
-import theme from '@/themes/YaakTheme';
+import theme from '@/themes/DriveTheme';
 
 interface MenuItem {
     text: string;
@@ -145,7 +144,18 @@ const Sidebar: React.FC = () => {
                         padding: isSidebarOpen ? theme.spacing(2) : theme.spacing(1), // Adjust padding based on the open state
                     }}
                 >
-                    <SvgIcon component={YaakLogo} sx={{ width: 76, height: 26 }} viewBox="0 0 122 48"/>
+                    <Typography 
+                                    variant="h1" 
+                                    component="h1" 
+                                    color="black"
+                                    sx={{
+                                        opacity: isSidebarOpen ? 1 : 0, // Adjust opacity based on the open state
+                                        position: isSidebarOpen ? 'relative' : 'absolute',
+                                        padding: isSidebarOpen ? theme.spacing(2) : theme.spacing(1), // Adjust padding based on the open state
+                                    }}
+                                    >
+                                    DriveSchool
+                                </Typography>
                 </LogoContainer>
 
                 <IconButton 

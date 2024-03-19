@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { CssBaseline, ThemeProvider } from '@mui/material';
-import theme from './themes/YaakTheme';
+import theme from './themes/DriveTheme';
 import App from './App';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
