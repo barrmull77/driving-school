@@ -1475,7 +1475,7 @@ const sessions =
             "licensePlate": "B-YA 241E ",
             "vin": "KNACC81GFN5144560",
             "bitRateKbps": null
-        }], "metaData": {"count": 20, "totalCount": 3471}
+        }], "metaData": {"count": 20, "totalCount": 150}
     }
 // Assuming `sessions` is your original object containing the data array
 for (let i = 0; i < 100; i++) {

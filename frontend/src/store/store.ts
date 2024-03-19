@@ -58,6 +58,29 @@ interface SideBarState {
   setSidebarOpen: (isOpen: boolean) => void;
 }
 
+// Utility function for filtering drives
+function filterDrives(drives: DriveData[], searchTerm: string, filterDate: string | null): DriveData[] {
+  return drives.filter(drive => {
+    const matchesFilterDate = !filterDate || new Date(drive.startTimestamp).toDateString() === new Date(filterDate).toDateString();
+    if (!searchTerm.trim()) return matchesFilterDate;
+    const lowerCaseSearchTerm = searchTerm.toLowerCase();
+
+    const includesSearchTerm = (value: any) => {
+      if (value === null || value === undefined) return false;
+      return String(value).toLowerCase().includes(lowerCaseSearchTerm);
+    };
+
+    // Check multiple fields for match
+    return matchesFilterDate && (
+      includesSearchTerm(drive.dongleId) ||
+      includesSearchTerm(drive.driver?.firstname) ||
+      includesSearchTerm(drive.driver?.lastname) ||
+      includesSearchTerm(drive.partner?.name) ||
+      includesSearchTerm(drive.licensePlate)
+    );
+  });
+}
+
 export const useDriveStore = create<DriveState>((set, get) => ({
   drives: [],
   loading: false,
@@ -132,29 +155,6 @@ export const useDriveStore = create<DriveState>((set, get) => ({
     }));
   },
 }));
-
-// Utility function for filtering drives
-function filterDrives(drives: DriveData[], searchTerm: string, filterDate: string | null): DriveData[] {
-  return drives.filter(drive => {
-    const matchesFilterDate = !filterDate || new Date(drive.startTimestamp).toDateString() === new Date(filterDate).toDateString();
-    if (!searchTerm.trim()) return matchesFilterDate;
-    const lowerCaseSearchTerm = searchTerm.toLowerCase();
-
-    const includesSearchTerm = (value: any) => {
-      if (value === null || value === undefined) return false;
-      return String(value).toLowerCase().includes(lowerCaseSearchTerm);
-    };
-
-    // Check multiple fields for match
-    return matchesFilterDate && (
-      includesSearchTerm(drive.dongleId) ||
-      includesSearchTerm(drive.driver?.firstname) ||
-      includesSearchTerm(drive.driver?.lastname) ||
-      includesSearchTerm(drive.partner?.name) ||
-      includesSearchTerm(drive.licensePlate)
-    );
-  });
-}
 
 export const useSidebarStore = create<SideBarState>((set) => ({
   isSidebarOpen: true, 

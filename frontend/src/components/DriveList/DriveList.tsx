@@ -134,7 +134,7 @@ const loadMoreTriggerStyle = {
 
 const DriveList: React.FC = () => {
     
-    const { loading, error, fetchDrives, fetchMoreDrives } = useDriveStore();
+    const { loading, error, hasMore, fetchDrives, fetchMoreDrives } = useDriveStore();
     const filteredDrives = useDriveStore(state => state.filteredDrives);
 
     const [renderfilteredDrives, setRenderFilteredDrives] = useState([]);
@@ -145,7 +145,6 @@ const DriveList: React.FC = () => {
     }, [])
 
     useEffect(() => {
-        console.log('filter drives', filteredDrives);
         const results = filteredDrives;
         setRenderFilteredDrives(filteredDrives);
         setNoResults(filteredDrives.length === 0);
@@ -216,11 +215,11 @@ const DriveList: React.FC = () => {
                 </TableBody>
                 </Table>
             </TableContainer>
-            <div className="loadMoreTrigger" style={loadMoreTriggerStyle}>
+            {hasMore && (<div className="loadMoreTrigger" style={loadMoreTriggerStyle}>
                 <Box sx={{ display: 'flex', justifyContent: 'center', height: '50px', width: '100%', marginTop: '20px'}}>
                     <CircularProgress />
                 </Box>
-            </div>
+            </div>)}
         </>
     )
 }
